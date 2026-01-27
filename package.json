@@ -1,0 +1,30 @@
+{
+  "type": "module",
+  "name": "pokedex",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest --run --exclude dist",
+    "build": "npx tsc",
+    "start": "node dist/main.js",
+    "dev": "npx tsc && node dist/main.js"
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jared6484/Pokedex.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jared6484/Pokedex/issues"
+  },
+  "homepage": "https://github.com/Jared6484/Pokedex#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^25.0.5",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  }
+}
