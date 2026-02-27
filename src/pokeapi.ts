@@ -36,9 +36,9 @@ export class PokeAPI {
 
     const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
 
-    const page = this.#cache.get<Location>(url);  
-    if(page != undefined){
-      return page;
+    const cache = this.#cache.get<Location>(url);  
+    if(cache != undefined){
+      return cache;  // This whole if statement really means, if cached, use the cache. 
     }
 
     const response = await fetch(url);
@@ -56,9 +56,59 @@ export class PokeAPI {
   async stopCache() {
     this.#cache.stopReapLoop();
   }
+
+  async fetchPokemonData(pokemonName: string): Promise<Pokemon> {
+    const url = `${PokeAPI.baseURL}/pokemon/${pokemonName}`;
+    
+    const cachePage = this.#cache.get<Pokemon>(url);
+    if(cachePage != undefined){
+      return cachePage;
+    }
+    try{
+      const response = await fetch(url);
+      if(!response.ok){
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      const pokemon: Pokemon = await response.json();
+      this.#cache.add<Pokemon>(url, pokemon);
+
+      return pokemon;
+
+    } catch(e){
+      throw new Error(`Error fetching locations: ${e as Error}.message}`);
+    }
+}
+
 };
 
 
+
+
+export type Pokemon = {
+  "id": number,
+  "name": string,
+  "base_experience": number,
+  "height": number,
+  "is_default": boolean,
+  "order": number,
+  "weight": number,
+  stats: {
+    base_stat: number;
+    effort: number;
+    stat: {
+      name: string;
+      url: string;
+    };
+  }[];
+
+  types: {
+    slot: number;
+    type: {
+      name: string;
+      url: string;
+    };
+  }[];
+};
 
 export type ShallowLocations = {
   count: number;
@@ -68,6 +118,67 @@ export type ShallowLocations = {
 };
 
 export type Location = {
-  id: number;
-  name: string;
+  "id": 1,
+  "name": "canalave-city-area",
+  "game_index": 1,
+  "encounter_method_rates": [
+    {
+      "encounter_method": {
+        "name": "old-rod",
+        "url": "https://pokeapi.co/api/v2/encounter-method/2/"
+      },
+      "version_details": [
+        {
+          "rate": 25,
+          "version": {
+            "name": "platinum",
+            "url": "https://pokeapi.co/api/v2/version/14/"
+          }
+        }
+      ]
+    }
+  ],
+  "location": {
+    "name": "canalave-city",
+    "url": "https://pokeapi.co/api/v2/location/1/"
+  },
+  "names": [
+    {
+      "name": "",
+      "language": {
+        "name": "en",
+        "url": "https://pokeapi.co/api/v2/language/9/"
+      }
+    }
+  ],
+  "pokemon_encounters": [
+    {
+      "pokemon": {
+        "name": "tentacool",
+        "url": "https://pokeapi.co/api/v2/pokemon/72/"
+      },
+      "version_details": [
+        {
+          "version": {
+            "name": "diamond",
+            "url": "https://pokeapi.co/api/v2/version/12/"
+          },
+          "max_chance": 60,
+          "encounter_details": [
+            {
+              "min_level": 20,
+              "max_level": 30,
+              "condition_values": [],
+              "chance": 60,
+              "method": {
+                "name": "surf",
+                "url": "https://pokeapi.co/api/v2/encounter-method/5/"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
 };
+

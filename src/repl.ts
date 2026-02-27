@@ -24,7 +24,7 @@ export function startREPL(state: State): void {
     if(command){
         try{
             //const command = commands[clnInput[0]];
-            await command.callback(state);
+            await command.callback(state,... clnInput.slice(1));
         } catch (err){
             console.error("Command error:", err);
         } 
